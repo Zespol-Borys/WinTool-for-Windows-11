@@ -473,7 +473,7 @@ function Show-AppMenu {
         Write-Host ""
 
         for ($index = 0; $index -lt $Apps.Count; $index++) {
-            $mark = if ($Apps[$index].Selected) { "[X]" } else { "[ ]" }
+            if ($Apps[$index].Selected) { $mark = "[X]" } else { $mark = "[ ]" }
             $line = "{0,2}. {1} {2} ({3})" -f ($index + 1), $mark, $Apps[$index].Name, $Apps[$index].Category
 
             if ($Apps[$index].Category -eq "Nie ruszac") {

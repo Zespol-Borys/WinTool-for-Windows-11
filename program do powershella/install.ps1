@@ -31,7 +31,7 @@ try {
 
         Start-Process -FilePath "powershell.exe" -ArgumentList @(
             "-NoProfile", "-NoExit", "-ExecutionPolicy", "Bypass",
-            "-File", $tempFile
+            "-File", "`"$tempFile`""
         ) -Verb RunAs
 
         Write-Host "Otwarto nowe okno z uprawnieniami administratora." -ForegroundColor Green
