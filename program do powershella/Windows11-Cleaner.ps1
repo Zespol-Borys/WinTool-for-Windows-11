@@ -4,7 +4,7 @@ param()
 $ErrorActionPreference = "Continue"
 
 $LogPath = Join-Path $PSScriptRoot ("cleaner-log-{0}.txt" -f (Get-Date -Format "yyyyMMdd-HHmmss"))
-$FooterText = "Zespol Borys (c) 2026 WinTool"
+$FooterText = "Zespol Borys (c) 2026 WinTool | ORIGINAL VERSION v A_0.1"
 $WindowsUpdateGuardTaskName = "WinTool-WindowsUpdateGuard"
 $WindowsUpdateGuardScriptPath = Join-Path $PSScriptRoot "WinTool-WindowsUpdateGuard.ps1"
 $WindowsUpdateGuardStatePath = Join-Path $PSScriptRoot "wintool-windows-update-guard.json"
