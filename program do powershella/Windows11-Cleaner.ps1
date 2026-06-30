@@ -18,6 +18,7 @@ $Translations = @{
         RedOption = "OPCJA CZERWONA: OneDrive + Windows Update"
         RemoveSelected = "Usun zaznaczone aplikacje"
         ShowCategories = "Pokaz liste kategorii"
+        ShowLogs = "Otworz plik z logami"
         LanguageMenu = "Zmien jezyk"
         Exit = "Wyjscie"
         SelectedApps = "Zaznaczone aplikacje"
@@ -70,6 +71,7 @@ $Translations = @{
         RedOption = "RED OPTION: OneDrive + Windows Update"
         RemoveSelected = "Remove selected apps"
         ShowCategories = "Show category list"
+        ShowLogs = "Open logs file"
         LanguageMenu = "Change language"
         Exit = "Exit"
         SelectedApps = "Selected apps"
@@ -122,6 +124,7 @@ $Translations = @{
         RedOption = "ROTE OPTION: OneDrive + Windows Update"
         RemoveSelected = "Ausgewaehlte Apps entfernen"
         ShowCategories = "Kategorieliste anzeigen"
+        ShowLogs = "Protokolldatei oeffnen"
         LanguageMenu = "Sprache aendern"
         Exit = "Beenden"
         SelectedApps = "Ausgewaehlte Apps"
@@ -940,6 +943,17 @@ function Show-LanguageMenu {
     }
 }
 
+function Show-Logs {
+    Write-Host ""
+    if (Test-Path $LogPath) {
+        Write-Host "Otwieranie pliku logow..." -ForegroundColor Cyan
+        Start-Process "notepad.exe" -ArgumentList $LogPath
+    } else {
+        Write-Host "Plik logow jeszcze nie istnieje." -ForegroundColor Yellow
+        Start-Sleep -Seconds 2
+    }
+}
+
 function Show-MainMenu {
     while ($true) {
         Show-Header -Title (T "MainTitle") -Subtitle (T "MainSubtitle")
@@ -949,6 +963,7 @@ function Show-MainMenu {
         Write-MenuOption -Key "3" -Text (T "RemoveSelected") -Color Yellow
         Write-MenuOption -Key "4" -Text (T "ShowCategories") -Color Cyan
         Write-MenuOption -Key "5" -Text (T "LanguageMenu") -Color Cyan
+        Write-MenuOption -Key "6" -Text (T "ShowLogs") -Color Cyan
         Write-MenuOption -Key "0" -Text (T "Exit") -Color DarkGray
         Write-Host ""
 
@@ -964,6 +979,7 @@ function Show-MainMenu {
             "3" { Invoke-SelectedAppRemoval }
             "4" { Show-CategoryList }
             "5" { Show-LanguageMenu }
+            "6" { Show-Logs }
             "0" { return }
             default {
                 Write-Host (T "UnknownOption") -ForegroundColor Yellow
