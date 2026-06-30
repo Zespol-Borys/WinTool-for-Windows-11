@@ -31,6 +31,7 @@ $Translations = @{
         SelectAll = "zaznacz wszystko"
         DeselectAll = "odznacz wszystko"
         MouseSelect = "zaznacz myszka w oknie"
+        CommandSelect = "komenda do wybierania programu (np. c4)"
         Back = "powrot"
         CategoryTitle = "Lista kategorii"
         CategorySubtitle = "Podzial aplikacji wedlug ryzyka usuwania."
@@ -84,6 +85,7 @@ $Translations = @{
         SelectAll = "select all"
         DeselectAll = "deselect all"
         MouseSelect = "select with mouse in a window"
+        CommandSelect = "command to select app (e.g. c4)"
         Back = "back"
         CategoryTitle = "Category list"
         CategorySubtitle = "Apps grouped by removal risk."
@@ -137,6 +139,7 @@ $Translations = @{
         SelectAll = "alle auswaehlen"
         DeselectAll = "alle abwaehlen"
         MouseSelect = "mit Maus im Fenster auswaehlen"
+        CommandSelect = "Befehl zur App-Auswahl (z.B. c4)"
         Back = "zurueck"
         CategoryTitle = "Kategorieliste"
         CategorySubtitle = "Apps nach Risiko beim Entfernen gruppiert."
@@ -494,6 +497,7 @@ function Show-AppMenu {
         Write-MenuOption -Key "A" -Text (T "SelectAll") -Color Cyan
         Write-MenuOption -Key "D" -Text (T "DeselectAll") -Color Cyan
         Write-MenuOption -Key "M" -Text (T "MouseSelect") -Color Cyan
+        Write-MenuOption -Key "C (liczba)" -Text (T "CommandSelect") -Color Cyan
         Write-MenuOption -Key "0" -Text (T "Back") -Color DarkGray
         Show-Footer
 
