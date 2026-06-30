@@ -766,9 +766,7 @@ function Register-WindowsUpdateGuard {
     $state | ConvertTo-Json | Set-Content -LiteralPath $WindowsUpdateGuardStatePath -Encoding UTF8
 
     $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$WindowsUpdateGuardScriptPath`""
-    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1)
-    $trigger.Repetition.Interval = "PT5M"
-    $trigger.Repetition.Duration = ("P{0}D" -f ($Days + 1))
+    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 5) -RepetitionDuration (New-TimeSpan -Days ($Days + 1))
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
 
     Unregister-ScheduledTask -TaskName $WindowsUpdateGuardTaskName -Confirm:$false -ErrorAction SilentlyContinue
