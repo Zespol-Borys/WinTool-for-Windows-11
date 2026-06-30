@@ -1,30 +1,19 @@
 # Jak uruchomic WinTool na innym PC
 
+## Gotowa komenda
+
+Na innym PC uruchom PowerShell jako administrator i wpisz:
+
+```powershell
+irm "https://raw.githubusercontent.com/Zespol-Borys/WinTool-for-Windows-11/main/program%20do%20powershella/install.ps1" | iex
+```
+
 ## Wariant 1: instalator z internetu
 
-Wrzuć pliki na GitHub albo inny hosting jako pliki RAW:
-
-- `install.ps1`
-- `Windows11-Cleaner.ps1`
-- `WinTool-WindowsUpdateGuard.ps1`
-- `LISTA-KATEGORIE.md`
-
-W pliku `install.ps1` podmien:
+Pliki programu sa pobierane z:
 
 ```powershell
-https://TU-WKLEJ-LINK-DO-FOLDERU-RAW/WinTool
-```
-
-na prawdziwy link, np.:
-
-```powershell
-https://raw.githubusercontent.com/nazwa/repo/main
-```
-
-Potem na innym PC uruchom PowerShell jako administrator i wpisz:
-
-```powershell
-irm "LINK_DO_RAW_INSTALL.PS1" | iex
+https://raw.githubusercontent.com/Zespol-Borys/WinTool-for-Windows-11/main/program%20do%20powershella
 ```
 
 ## Wariant 2: z parametrem bez edycji install.ps1
@@ -38,7 +27,7 @@ iex "& { $(irm 'LINK_DO_RAW_INSTALL.PS1') } -SourceBaseUrl 'LINK_DO_FOLDERU_RAW'
 Przyklad:
 
 ```powershell
-iex "& { $(irm 'https://raw.githubusercontent.com/nazwa/repo/main/install.ps1') } -SourceBaseUrl 'https://raw.githubusercontent.com/nazwa/repo/main'"
+iex "& { $(irm 'https://raw.githubusercontent.com/Zespol-Borys/WinTool-for-Windows-11/main/program%20do%20powershella/install.ps1') } -SourceBaseUrl 'https://raw.githubusercontent.com/Zespol-Borys/WinTool-for-Windows-11/main/program%20do%20powershella'"
 ```
 
 ## Co robi instalator

@@ -424,6 +424,7 @@ function Restart-AsAdmin {
     if ($answer -match "^[TtYy]$") {
         Start-Process -FilePath "powershell.exe" -ArgumentList @(
             "-NoProfile",
+            "-NoExit",
             "-ExecutionPolicy", "Bypass",
             "-File", "`"$PSCommandPath`""
         ) -Verb RunAs
@@ -976,3 +977,6 @@ Restart-AsAdmin
 Write-Log "Program started"
 Show-MainMenu
 Write-Log "Program closed"
+Write-Host ""
+Write-Host "Program zamkniety. Mozesz zamknac to okno." -ForegroundColor DarkGray
+Read-Host "Enter aby zamknac"
