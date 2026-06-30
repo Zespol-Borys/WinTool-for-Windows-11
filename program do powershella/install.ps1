@@ -27,7 +27,8 @@ try {
 
         # Pobierz install.ps1 do temp, zeby moc uruchomic jako admin z pliku
         $tempFile = Join-Path $env:TEMP "WinTool-install.ps1"
-        Invoke-WebRequest -Uri "$SourceBaseUrl/install.ps1" -OutFile $tempFile -UseBasicParsing
+        $cacheBuster = (Get-Date).Ticks
+        Invoke-WebRequest -Uri "$SourceBaseUrl/install.ps1?t=$cacheBuster" -OutFile $tempFile -UseBasicParsing
 
         Start-Process -FilePath "powershell.exe" -ArgumentList @(
             "-NoProfile", "-NoExit", "-ExecutionPolicy", "Bypass",
@@ -48,7 +49,8 @@ try {
 
     # Pobierz pliki
     foreach ($file in $Files) {
-        $url = "{0}/{1}" -f $SourceBaseUrl, $file
+        $cacheBuster = (Get-Date).Ticks
+        $url = "{0}/{1}?t={2}" -f $SourceBaseUrl, $file, $cacheBuster
         $target = Join-Path $InstallPath $file
         Write-Host "  Pobieranie: $file ..." -ForegroundColor Cyan
         Invoke-WebRequest -Uri $url -OutFile $target -UseBasicParsing
