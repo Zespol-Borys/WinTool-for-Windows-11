@@ -39,9 +39,8 @@ Usuwaj tylko, jesli wiesz, ze tego nie uzywasz:
 - OneDrive - jesli nie synchronizujesz plikow z chmura
 - Windows Update - blokada na wybrana liczbe dni albo stale wylaczenie z opcja przywrocenia
 - Microsoft Edge - tylko jesli masz inna przegladarke
-- Word
-- Excel
-- PowerPoint
+- Microsoft 365
+- Microsoft Office
 - Outlook
 - Outlook classic - zwykle jest czescia pakietu Office i moze nie usunac sie osobno
 - OneNote

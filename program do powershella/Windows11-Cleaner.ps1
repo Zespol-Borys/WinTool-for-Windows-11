@@ -287,24 +287,17 @@ $Apps = @(
         Selected = $true
     },
     @{
-        Name = "Word"
-        Packages = @("Microsoft.Office.Word")
+        Name = "Microsoft 365"
+        Packages = @("Microsoft.Microsoft365")
         Category = "Opcjonalne"
-        Note = "Usuwa aplikacje Word, jesli jest zainstalowana jako pakiet Microsoft Store."
+        Note = "Usuwa aplikacje Microsoft 365 ze sklepu Microsoft Store."
         Selected = $false
     },
     @{
-        Name = "Excel"
-        Packages = @("Microsoft.Office.Excel")
+        Name = "Microsoft Office"
+        Packages = @("Microsoft.Office.Desktop")
         Category = "Opcjonalne"
-        Note = "Usuwa aplikacje Excel, jesli jest zainstalowana jako pakiet Microsoft Store."
-        Selected = $false
-    },
-    @{
-        Name = "PowerPoint"
-        Packages = @("Microsoft.Office.PowerPoint")
-        Category = "Opcjonalne"
-        Note = "Usuwa aplikacje PowerPoint, jesli jest zainstalowana jako pakiet Microsoft Store."
+        Note = "Usuwa aplikacje Microsoft Office ze sklepu Microsoft Store."
         Selected = $false
     },
     @{
@@ -376,9 +369,8 @@ $CategoryList = @(
             "OneDrive - usun, jesli nie synchronizujesz plikow z chmura",
             "Windows Update - pauza na wybrana liczbe dni albo stale wylaczenie",
             "Microsoft Edge - usun tylko jesli masz inna przegladarke",
-            "Word",
-            "Excel",
-            "PowerPoint",
+            "Microsoft 365",
+            "Microsoft Office",
             "Outlook",
             "Outlook classic",
             "OneNote",
