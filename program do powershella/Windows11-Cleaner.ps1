@@ -470,18 +470,27 @@ function Show-AppMenu {
         Write-Host (T "AppHintMouse") -ForegroundColor DarkGray
         Write-Host ""
 
-        for ($index = 0; $index -lt $Apps.Count; $index++) {
-            if ($Apps[$index].Selected) { $mark = "[X]" } else { $mark = "[ ]" }
-            $line = "{0,2}. {1} {2} ({3})" -f ($index + 1), $mark, $Apps[$index].Name, $Apps[$index].Category
+        for ($index = 0; $index -lt $Script:Apps.Count; $index++) {
+            $app = $Script:Apps[$index]
+            
+            if (-not $app.Installed) {
+                $mark = "[-]"
+                $statusText = "(Brak)"
+                $line = "{0,2}. {1} {2} {3}" -f ($index + 1), $mark, $app.Name, $statusText
+                Write-Host $line -ForegroundColor DarkGray
+            } else {
+                if ($app.Selected) { $mark = "[X]" } else { $mark = "[ ]" }
+                $line = "{0,2}. {1} {2} ({3})" -f ($index + 1), $mark, $app.Name, $app.Category
 
-            if ($Apps[$index].Category -eq "Nie ruszac") {
-                Write-Host $line -ForegroundColor Red
-            }
-            elseif ($Apps[$index].Category -eq "Opcjonalne") {
-                Write-Host $line -ForegroundColor Yellow
-            }
-            else {
-                Write-Host $line -ForegroundColor Green
+                if ($app.Category -eq "Nie ruszac") {
+                    Write-Host $line -ForegroundColor Red
+                }
+                elseif ($app.Category -eq "Opcjonalne") {
+                    Write-Host $line -ForegroundColor Yellow
+                }
+                else {
+                    Write-Host $line -ForegroundColor Green
+                }
             }
         }
 
@@ -500,14 +509,16 @@ function Show-AppMenu {
         }
 
         if ($choice -match "^[Aa]$") {
-            foreach ($app in $Apps) {
-                $app.Selected = $true
+            foreach ($app in $Script:Apps) {
+                if ($app.Installed) {
+                    $app.Selected = $true
+                }
             }
             continue
         }
 
         if ($choice -match "^[Dd]$") {
-            foreach ($app in $Apps) {
+            foreach ($app in $Script:Apps) {
                 $app.Selected = $false
             }
             continue
@@ -520,15 +531,21 @@ function Show-AppMenu {
 
         if ($choice -match "^[Cc](\d+)$") {
             $number = [int]$Matches[1]
-            if ($number -ge 1 -and $number -le $Apps.Count) {
-                $Apps[$number - 1].Selected = -not $Apps[$number - 1].Selected
+            if ($number -ge 1 -and $number -le $Script:Apps.Count) {
+                $app = $Script:Apps[$number - 1]
+                if ($app.Installed) {
+                    $app.Selected = -not $app.Selected
+                }
             }
             continue
         }
 
         $number = 0
-        if ([int]::TryParse($choice, [ref]$number) -and $number -ge 1 -and $number -le $Apps.Count) {
-            $Apps[$number - 1].Selected = -not $Apps[$number - 1].Selected
+        if ([int]::TryParse($choice, [ref]$number) -and $number -ge 1 -and $number -le $Script:Apps.Count) {
+            $app = $Script:Apps[$number - 1]
+            if ($app.Installed) {
+                $app.Selected = -not $app.Selected
+            }
         }
     }
 }
@@ -557,10 +574,19 @@ function Show-AppMouseMenu {
     $form.Controls.Add($panel)
 
     $checkboxes = @()
-    for ($index = 0; $index -lt $Apps.Count; $index++) {
+    for ($index = 0; $index -lt $Script:Apps.Count; $index++) {
+        $app = $Script:Apps[$index]
         $checkbox = [System.Windows.Forms.CheckBox]::new()
-        $checkbox.Text = "{0}. {1} ({2})" -f ($index + 1), $Apps[$index].Name, $Apps[$index].Category
-        $checkbox.Checked = [bool]$Apps[$index].Selected
+        
+        if ($app.Installed) {
+            $checkbox.Text = "{0}. {1} ({2})" -f ($index + 1), $app.Name, $app.Category
+            $checkbox.Enabled = $true
+        } else {
+            $checkbox.Text = "{0}. {1} (Brak)" -f ($index + 1), $app.Name
+            $checkbox.Enabled = $false
+        }
+        
+        $checkbox.Checked = [bool]$app.Selected
         $checkbox.AutoSize = $true
         $checkbox.Location = [System.Drawing.Point]::new(8, 8 + ($index * 30))
         $checkbox.Tag = $index
@@ -948,6 +974,51 @@ function Show-Logs {
     }
 }
 
+function Initialize-AppScan {
+    Clear-Host
+    Write-Host "+============================================================+" -ForegroundColor DarkCyan
+    Write-Host "|               Skanowanie systemu...                        |" -ForegroundColor Cyan
+    Write-Host "+============================================================+" -ForegroundColor DarkCyan
+    Write-Host ""
+    Write-Host "Trwa sprawdzanie zainstalowanych aplikacji (to potrwa chwile)..." -ForegroundColor Yellow
+    Write-Log "Rozpoczecie skanowania zainstalowanych aplikacji..."
+
+    # Pobieranie listy pakietow (bez -AllUsers, aby dzialalo bez uprawnien System)
+    $appxPackages = Get-AppxPackage -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name
+    $provisioned = Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue | Select-Object -ExpandProperty DisplayName
+    $allInstalled = @()
+    if ($appxPackages) { $allInstalled += $appxPackages }
+    if ($provisioned) { $allInstalled += $provisioned }
+
+    $installedCount = 0
+
+    foreach ($app in $Script:Apps) {
+        $isInstalled = $false
+        foreach ($pkg in $app.Packages) {
+            # Niektore nazwy moga byc czesciowe, uzywamy -match lub -contains
+            if (($allInstalled -contains $pkg) -or ($allInstalled -match [regex]::Escape($pkg))) {
+                $isInstalled = $true
+                break
+            }
+        }
+        
+        $app | Add-Member -MemberType NoteProperty -Name "Installed" -Value $isInstalled
+        
+        if ($isInstalled) {
+            $installedCount++
+            Write-Host " [Znaleziono] $($app.Name)" -ForegroundColor Green
+        } else {
+            $app.Selected = $false # Na wszelki wypadek odznaczamy
+            Write-Host " [Brak]       $($app.Name)" -ForegroundColor DarkGray
+        }
+    }
+
+    Write-Log "Skanowanie zakonczone. Znaleziono: $installedCount"
+    Write-Host ""
+    Write-Host "Skanowanie zakonczone. Znaleziono $installedCount aplikacji do zarzadzania." -ForegroundColor Cyan
+    Start-Sleep -Seconds 2
+}
+
 function Show-MainMenu {
     while ($true) {
         Show-Header -Title (T "MainTitle") -Subtitle (T "MainSubtitle")
@@ -985,6 +1056,7 @@ function Show-MainMenu {
 
 Restart-AsAdmin
 Write-Log "Program started"
+Initialize-AppScan
 Show-MainMenu
 Write-Log "Program closed"
 Write-Host ""
